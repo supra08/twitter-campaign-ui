@@ -14,94 +14,226 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/core";
 import { Input,useDisclosure } from "@chakra-ui/core";
-function AirbnbExample() {
-  const property = {
-    imageUrl: "https://bit.ly/2Z4KKcF", // Twitter logo if not logged in else user image
-    imageAlt: "bla bla",
-    title: "Twitter Campaigns",
-    name: "Kanav Gupta",
-    username: "@kanavgupta99",
-    Followings: 184,
-    Followers: 47,
-  };
+import Twitter from "./twitter.svg"
+import { List, ListItem, ListIcon } from "@chakra-ui/core";
 
-  const campaigns = {
-    list: "bla bla" //list of campingns
-  }
+function App() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef();
+
   return (
-    // <Box maxW="sm" borderWidth="1px" rounded="lg" overflow="hidden">
-    //   <Image src={property.imageUrl} alt={property.imageAlt} />
-    // </Box>
     <ThemeProvider>
-       <CSSReset />
-    <Box bg="black" color="White" d="flex" w="100%" h= "100%" p={4} d= "flex">
-      
-      <Box d= "flex" w= "40%" alignItems= "center" flexDirection="column">
-        <Box>Your Campaigns</Box>
-        <Divider />
-        <Box><Button leftIcon="view" bg="black" variant="outline" color="white">Campaign 1</Button></Box>
-        <Divider />
-        <Box><Button bg="black" variant="outline" color="white">Campaign 1</Button></Box>
+    <CSSReset />
+      <Box w="100vw" h="100vh" d="flex" flexDirection="row">
+        <Box h= "100%" w= "20%" d="flex" flexDirection="column">
+            <Box position="static" p="5%" w="100%" d="flex" justifyContent= "center"  border="1px" borderRadius="md" borderColor="gray.200">
+              My Campaigns
+            </Box>
+            <Box d="flex" flexDirection="column" w="100%">
+            {/* list of all campings */}
+            <Box>
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 1</Button>
+            </Box>
+            <Box mt="1px">
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 2</Button>
+            </Box>
+            <Box mt="1px">
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 3</Button>
+            </Box>
+            <Box mt="1px">
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 4</Button>
+            </Box>
+            </Box>
+        </Box>
+          <Divider mr="0" ml="0" orientation="vertical" />
+          <Box h= "100%" w="80%" d="flex" flexDirection="column" alignItems= "center">
+            <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
+              <Box d="flex" w="100%" justifyContent = "center">
+              <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
+              </Box>
+              <Box d="flex" justifyContent = "center" w="100%" mt="2em">Twitter campaigns</Box>
+              <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">v1.0</Box>
+            </Box>
+            <Box mt="10em" >
+            <Button size="lg">
+              Login
+            </Button>
+ 
+              </Box>
+          </Box>
       </Box>
-      <Divider orientation="vertical" />
-      <Box d= "flex" w= "60%" alignItems="center" flexDirection="column" justifyContent="center">
-        <Box d="flex" alignItems="center" justifyContent="center">
-        <Image size="20%" src={property.imageUrl} alt={property.imageAlt} />
-        </Box>
-        <Box d="flex" alignItems="center">
-            biwark
-        </Box>
-        <Box>
-        <Button bg="grey" variant="solid" color="white">
-          Login
-      </Button>
-        </Box>
-      </Box>
-    </Box>
-    </ThemeProvider>
+      </ThemeProvider>
   );
-};
+}
 
-function AddCampaign() {
+function App1() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
 
   return (
     <ThemeProvider>
    <CSSReset />
-      <Button ref={btnRef} bg="black" variant="solid" color="white" onClick={onOpen} leftIcon="add">
-        New Campaign
-      </Button>
-      <Drawer
-        isOpen={isOpen}
-        placement="top"
-        onClose={onClose}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Campaign Name</DrawerHeader>
-
-          <DrawerBody>
-            <Input placeholder="Type here..." />
-          </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
+      <Box w="100vw" h="100vh" d="flex" flexDirection="row">
+          <Box h= "100%" w= "20%" d="flex" flexDirection="column">
+            <Box position="static" p="5%" w="100%" d="flex" justifyContent= "center"  border="1px" borderRadius="md" borderColor="gray.200">
+              My Campaigns
+            </Box>
+            <Box d="flex" flexDirection="column" w="100%">
+            {/* list of all campings */}
+            <Box>
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 1</Button>
+            </Box>
+            <Box mt="1px">
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 2</Button>
+            </Box>
+            <Box mt="1px">
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 3</Button>
+            </Box>
+            <Box mt="1px">
+            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 4</Button>
+            </Box>
+            </Box>
+          </Box>
+          <Divider mr="0" ml="0" orientation="vertical" />
+          <Box h= "100%" w="80%" d="flex" flexDirection="column" alignItems= "center">
+            <Box mt="10em" width="100%" display="flex" justifyContent="flex-end" pr="1em" mt="2em">
+            <Button ref={btnRef} onClick={onOpen} leftIcon="add">
+              New Campaign
             </Button>
-            <Button color="blue">Save</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+            <Drawer isOpen={isOpen} placement="top" onClose={onClose} finalFocusRef={btnRef}>
+              <DrawerOverlay />
+              <DrawerContent>
+                <DrawerCloseButton />
+                <DrawerHeader>Campaign Name</DrawerHeader>
+
+                <DrawerBody>
+                  <Input placeholder="Type here..." />
+                </DrawerBody>
+
+                <DrawerFooter>
+                  <Button variant="outline" mr={3} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button color="blue">Save</Button>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+            </Box>
+            <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
+              <Box d="flex" w="100%" justifyContent = "center">
+                <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
+              </Box>
+              <Box d="flex" justifyContent = "center" w="100%" mt="2em">Kanav Gupta</Box>
+              <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@kanavgupta99</Box>
+              <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
+                <Box>184 Following</Box>
+                <Box ml="4%">47 Followers</Box>
+              </Box>
+            </Box>
+            <Box mt="10em" width="100%" display="flex" justifyContent="flex-end" pr="1em">
+            <Button size="lg">
+              Logout
+            </Button>
+              </Box>
+          </Box>
+      </Box>
       </ThemeProvider>
   );
 }
 
-const bodyElement = document.getElementById("body");
-ReactDOM.render(<AirbnbExample />, bodyElement);
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App2 />, rootElement);
 
 
-const headerElement = document.getElementById("header");
-ReactDOM.render(<AddCampaign />, headerElement);
+// function AirbnbExample() {
+//   const property = {
+//     imageUrl: "https://bit.ly/2Z4KKcF", // Twitter logo if not logged in else user image
+//     imageAlt: "bla bla",
+//     title: "Twitter Campaigns",
+//     name: "Kanav Gupta",
+//     username: "@kanavgupta99",
+//     Followings: 184,
+//     Followers: 47,
+//   };
+
+//   const campaigns = {
+//     list: "bla bla" //list of campingns
+//   }
+//   return (
+//     // <Box maxW="sm" borderWidth="1px" rounded="lg" overflow="hidden">
+//     //   <Image src={property.imageUrl} alt={property.imageAlt} />
+//     // </Box>
+//     <ThemeProvider>
+//        <CSSReset />
+//     <Box bg="black" color="White" d="flex" w="100%" h= "100%" p={4} d= "flex">
+      
+//       <Box d= "flex" w= "40%" alignItems= "center" flexDirection="column">
+//         <Box>Your Campaigns</Box>
+//         <Divider />
+//         <Box><Button leftIcon="view" bg="black" variant="outline" color="white">Campaign 1</Button></Box>
+//         <Divider />
+//         <Box><Button bg="black" variant="outline" color="white">Campaign 1</Button></Box>
+//       </Box>
+//       <Divider orientation="vertical" />
+//       <Box d= "flex" w= "60%" alignItems="center" flexDirection="column" justifyContent="center">
+//         <Box d="flex" alignItems="center" justifyContent="center">
+//         <Image size="20%" src={property.imageUrl} alt={property.imageAlt} />
+//         </Box>
+//         <Box d="flex" alignItems="center">
+//             biwark
+//         </Box>
+//         <Box>
+//         <Button bg="grey" variant="solid" color="white">
+//           Login
+//       </Button>
+//         </Box>
+//       </Box>
+//     </Box>
+//     </ThemeProvider>
+//   );
+// };
+
+// function AddCampaign() {
+//   const { isOpen, onOpen, onClose } = useDisclosure();
+//   const btnRef = React.useRef();
+
+//   return (
+//     <ThemeProvider>
+//    <CSSReset />
+//       <Button ref={btnRef} bg="black" variant="solid" color="white" onClick={onOpen} leftIcon="add">
+//         New Campaign
+//       </Button>
+//       <Drawer
+//         isOpen={isOpen}
+//         placement="top"
+//         onClose={onClose}
+//         finalFocusRef={btnRef}
+//       >
+//         <DrawerOverlay />
+//         <DrawerContent>
+//           <DrawerCloseButton />
+//           <DrawerHeader>Campaign Name</DrawerHeader>
+
+//           <DrawerBody>
+//             <Input placeholder="Type here..." />
+//           </DrawerBody>
+
+//           <DrawerFooter>
+//             <Button variant="outline" mr={3} onClick={onClose}>
+//               Cancel
+//             </Button>
+//             <Button color="blue">Save</Button>
+//           </DrawerFooter>
+//         </DrawerContent>
+//       </Drawer>
+//       </ThemeProvider>
+//   );
+// }
+
+// const bodyElement = document.getElementById("body");
+// ReactDOM.render(<AirbnbExample />, bodyElement);
+
+
+// const headerElement = document.getElementById("header");
+// ReactDOM.render(<AddCampaign />, headerElement);
