@@ -25,54 +25,13 @@ import {
 import { Textarea } from "@chakra-ui/core";
 import { Select } from "@chakra-ui/core";
 
+const BACKEND_URL = "https://twicamp-backend.herokuapp.com";
 
 function getCampaignInfo(id) {
   fetch('http://127.0.0.1:5000/campaign?id=' + id, {
     method: 'GET',
   })
   .then(res => res.json())
-}
-
-function createCampaign(name, id, strategy, message) {
-  fetch('http://127.0.0.1:5000/campaign', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 'name': name, 'id': id, 'strategy': strategy, 'message': message })
-  })
-  .then(res => res.json())
-}
-
-function handleLogin() {
-  fetch('http://127.0.0.1:5000/request_token', {
-    method: 'GET',
-  })
-  .then(res => res.json())
-  .then(response => {
-    if (response.oauth_callback_confirmed == "true") {
-      const token = response.oauth_token;
-      window.location.replace(
-        "https://api.twitter.com/oauth/authenticate?oauth_token=" + token
-      );
-    } else {
-      console.log("Request token can not be retrieved.");
-    }
-  })
-}
-
-function handleLogout() {
-  fetch('http://127.0.0.1:5000/logout', {
-    method: 'GET',
-  })
-  .then(res => res.json())
-  .then(response => {
-    if (response.status == "true") {
-      window.location.replace(
-        "http://localhost:3000/"
-      );
-    } else {
-      console.log("Logout failed");
-    }
-  })
 }
 
 function App() {
@@ -83,9 +42,64 @@ function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
   const [currentCampaign, setCurrentCampaign] = useState(null);
+  const [newCampaign, setNewCampaign] = useState(false);
+  const [me, setMe] = useState(null);
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/campaigns', {
+  function handleLogin() {
+    fetch(BACKEND_URL + '/request_token', {
+      method: 'GET',
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.oauth_callback_confirmed == "true") {
+        const token = response.oauth_token;
+        window.location.replace(
+          "https://api.twitter.com/oauth/authenticate?oauth_token=" + token
+        );
+      } else {
+        console.log("Request token can not be retrieved.");
+      }
+    })
+  }
+  
+  function handleLogout(user_id) {
+    fetch(BACKEND_URL + '/logout?user_id=' + user_id, {
+      method: 'GET',
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.status == "true") {
+        setMe(null);
+        window.location.replace(
+          "http://localhost:3000/"
+        );
+      } else {
+        console.log("Logout failed");
+      }
+    })
+  }
+
+  function createCampaign(e) {
+    e.preventDefault()
+    const data = new FormData(e.target);
+    fetch(BACKEND_URL + '/campaign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 'name': data.get('name'), 'id': data.get('id'), 'strategy': data.get('strategy'), 'message': data.get('message'), 'user_id': me.id })
+    })
+    .then(res => res.json()
+    .then(data => {
+      if (data.status == "success") {
+        setNewCampaign(false);
+        fetchCampaigns(me.id);
+      }
+    })
+  )}
+
+  function fetchCampaigns(user_id) {
+    console.log('here -1')
+    console.log(user_id)
+    fetch(BACKEND_URL + '/campaigns?user_id=' + user_id, {
       method: 'GET',
     })
     .then(res => res.json())
@@ -97,20 +111,39 @@ function App() {
         setError(error);
       }
     )
+  }
+
+  useEffect(() => {
+    if (me) {
+      console.log('########')
+      console.log(me)
+      fetch(BACKEND_URL + '/campaigns?user_id=' + me.id, {
+        method: 'GET',
+      })
+      .then(res => res.json())
+      .then(
+        (result) => {
+          setItems(result.campaign_list);
+        },
+        (error) => {
+          setError(error);
+        }
+      )
+    }
   }, [])
 
   let oauth_token = ""
   let oauth_verifier = ""
 
-  const [loginButton, setLogin] = useState( <Button size="lg" onClick={handleLogin}> Login </Button> );
-  const [me, setMe] = useState({ name: '', handle: '', followers: '', following: '' })
+  const [loginButton, setLogin] = useState( <Button onClick={handleLogin}> Login </Button> );
+  // const [me, setMe] = useState({ name: '', handle: '', followers: '', following: '' })
   const urlParams = new URLSearchParams(window.location.search);
   oauth_token = urlParams.get('oauth_token');
   oauth_verifier = urlParams.get('oauth_verifier')
   
   useEffect(() => {
       if (oauth_token && oauth_verifier) {
-        fetch("http://127.0.0.1:5000/access_token?oauth_token=" + oauth_token + "&oauth_verifier=" + oauth_verifier, {
+        fetch(BACKEND_URL + "/access_token?oauth_token=" + oauth_token + "&oauth_verifier=" + oauth_verifier, {
           method: 'GET',
         })
         .then(res => res.json())
@@ -118,8 +151,9 @@ function App() {
           (result) => {
             console.log(result)
             if (result.status == "success") {
-              setLogin(<Button size="lg" onClick={handleLogout}> Logout </Button>);
-              setMe({ name: result.me.name, handle: result.screen_name, followers: result.me.followers_count, following: result.me.friends_count })
+              setLogin(<Button onClick={() => handleLogout(result.user_id)}> Logout </Button>);
+              setMe({ name: result.me.name, handle: result.screen_name, followers: result.me.followers_count, following: result.me.friends_count, id: result.user_id })
+              fetchCampaigns(result.user_id);
             }
           },
           (error) => {
@@ -130,19 +164,80 @@ function App() {
       }
     }, [])
 
-    function showCampaign(name) {
-      
+    function showCampaign(name) { 
         items.map(campaign => {
           if (campaign.name === name) {
             setCurrentCampaign(campaign);
+            setNewCampaign(false);
           }
-       
       })
-      // items.map(campaign => {
-      //   if (campaign.id === id) {
-      //     setCurrentCampaign(campaign);
-      //   }
-      // })
+    }
+
+    function toggleNewCampaign() {
+      if (newCampaign) {
+        setNewCampaign(false);
+      } else {
+        setNewCampaign(true);
+      }
+    }
+
+    function startCampaign(id) {
+      fetch(BACKEND_URL + '/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'id': id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status == "success") {
+          // 
+          let c_campaign = currentCampaign
+          c_campaign.started = true
+          setCurrentCampaign(c_campaign)
+        }
+      })
+    }
+
+    function stopCampaign(id) {
+      fetch(BACKEND_URL + '/stop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'id': id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status == "success") {
+          // fetchCampaigns()
+          let c_campaign = currentCampaign
+          c_campaign.started = false
+          setCurrentCampaign(c_campaign)
+        }
+      })
+    }
+
+    function deleteCampaign(id) {
+      fetch(BACKEND_URL + '/campaign', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'id': id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status == "success") {
+          // fetchCampaigns()
+          let newitems = items
+          items.map(campaign => {
+            if (campaign.id == id) {
+              const index = items.indexOf(campaign);
+              if (index > -1) {
+                items.splice(index, 1);
+                newitems = items
+                setItems(newitems)
+              }
+            }
+          })
+        }
+      })
     }
 
   
@@ -167,10 +262,13 @@ function App() {
           <Divider mr="0" ml="0" orientation="vertical" />
           <Box h= "100%" w="80%" d="flex" flexDirection="column" alignItems= "center">
             <Box mt="10em" width="100%" display="flex" justifyContent="flex-end" pr="1em" mt="2em">
-            <Button ref={btnRef} onClick={onOpen} leftIcon="add">
-              New Campaign
-            </Button>
-            <Drawer isOpen={isOpen} placement="top" onClose={onClose} finalFocusRef={btnRef}>
+            <Box> { me ? 
+              <Button ref={btnRef} onClick={toggleNewCampaign} leftIcon="add">
+                New Campaign
+              </Button> : '' }
+            </Box>
+            <Box ml="1em">{loginButton}</Box>
+            {/* <Drawer isOpen={isOpen} placement="top" onClose={onClose} finalFocusRef={btnRef}>
               <DrawerOverlay />
               <DrawerContent>
                 <DrawerCloseButton />
@@ -187,82 +285,96 @@ function App() {
                   <Button color="blue" onClick={createCampaign()}>Save</Button>
                 </DrawerFooter>
               </DrawerContent>
-            </Drawer>
-            </Box>
-            <Box d="flex" flexDirection="column" justifyContent = "flex-start" alignItems= "center" w="100%" mt="2em">
-            <form style={{width : '100%'}}>
-              <FormControl isRequired>
-              <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between">
-                <Box w="20%" pl="1em"><FormLabel htmlFor="name">Campaign Name</FormLabel></Box>
-                <Box w="70%" pr="1em"><Input id="name" name="name" placeholder="Campaign Name" /></Box>
-              </Box>
-              </FormControl>
-              <FormControl isRequired>
-              <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mt="1em">
-                <Box w="20%" pl="1em"><FormLabel htmlFor="message">Message Text</FormLabel></Box>
-                <Box w="70%" pr="1em">
-                <Textarea name="message" id="message" placeholder="Type your message here....." />
-                </Box>
-              </Box>
-              </FormControl>
-              <FormControl isRequired>
-              <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mt="1em">
-                <Box w="20%" pl="1em"><FormLabel htmlFor="strategy">Strategy</FormLabel></Box>
-                <Box w="70%" pr="1em">
-                  <Box w="30%">
-                    <Select placeholder="Select strategy" id="strategy" name="strategy">
-                      <option value="option1">strategy 1</option>
-                      <option value="option2">strategy 2</option>
-                      <option value="option3">strategy 3</option>
-                    </Select>
+            </Drawer> */}
+            </Box> 
+            { newCampaign == true ? ( 
+              <Box d="flex" flexDirection="column" justifyContent = "flex-start" alignItems= "center" w="100%" mt="2em">
+                <form style={{width : '100%'}} onSubmit={createCampaign}>
+                  <FormControl isRequired>
+                  <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between">
+                    <Box w="20%" pl="1em"><FormLabel htmlFor="name">Campaign Name</FormLabel></Box>
+                    <Box w="70%" pr="1em"><Input id="name" name="name" placeholder="Campaign Name" /></Box>
                   </Box>
-                </Box>
-              </Box>
-              </FormControl>
-            </form>
-            <Box d="flex" flexDirection="column" justifyContent = "flex-start" alignItems= "center" w="100%" mt="2em">
-              <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between">
-                <Box w="20%" pl="1em">Status</Box>
-                <Box w="70%" pr="1em">0/2</Box>
-              </Box>
-            </Box>
-            </Box>
-            <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="20em">
+                  </FormControl>
+                  <FormControl isRequired>
+                  <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mt="1em">
+                    <Box w="20%" pl="1em"><FormLabel htmlFor="id">Campaign ID</FormLabel></Box>
+                    <Box w="70%" pr="1em"><Input id="id" name="id" placeholder="Campaign ID" /></Box>
+                  </Box>
+                  </FormControl>
+                  <FormControl isRequired>
+                  <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mt="1em">
+                    <Box w="20%" pl="1em"><FormLabel htmlFor="message">Message Text</FormLabel></Box>
+                    <Box w="70%" pr="1em">
+                    <Textarea name="message" id="message" placeholder="Type your message here....." />
+                    </Box>
+                  </Box>
+                  </FormControl>
+                  <FormControl isRequired>
+                  <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mt="1em">
+                    <Box w="20%" pl="1em"><FormLabel htmlFor="strategy">Strategy</FormLabel></Box>
+                    <Box w="70%" pr="1em">
+                      <Box w="30%">
+                        <Select placeholder="Select strategy" id="strategy" name="strategy">
+                          <option value="tweet">tweet</option>
+                          <option value="friend">friend</option>
+                          <option value="follower">follower</option>
+                        </Select>
+                      </Box>
+                    </Box>
+                  </Box>
+                  </FormControl>
+                  <Box d="flex" flexDirection="column" justifyContent = "flex-start" alignItems= "center" w="100%" mt="2em">
+                    <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between">
+                      <Box w="20%" pl="1em">Status</Box>
+                      <Box w="70%" pr="1em">0/2</Box>
+                    </Box>
+                  </Box>
+                  <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="20em">
+                    <Box d="flex" flexDirection="row">
+                      <Box ml="1em"><Button type="submit">Start Campaign</Button></Box>
+                    </Box>
+                  </Box>
+                </form>
+              </Box> 
+            ) : 
               <Box>
-                <Button>Delete Campaign</Button>
-              </Box>
-              <Box d="flex" flexDirection="row">
-                <Box><Button>Reset</Button></Box>
-                <Box ml="1em"><Button>Pause</Button></Box>
-                <Box ml="1em"><Button>Start Campaign</Button></Box>
+                <Box> { currentCampaign == null ? (
+                  <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
+                  <Box d="flex" w="100%" justifyContent = "center">
+                    <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
+                  </Box>
+                  { me ? (
+                  <Box> 
+                    <Box d="flex" justifyContent = "center" w="100%" mt="2em">{me.name}</Box>
+                    <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@{me.handle}</Box>
+                      <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
+                        <Box>{me.following} Following</Box>
+                        <Box ml="4%">{me.followers} Followers</Box>
+                      </Box>)
+                    </Box>)  : ''}
+                  </Box>
+                ): (<Box> { me ? 
+                      <Box>
+                        <Box d="flex" justifyContent = "center" w="100%" mt="2em">{currentCampaign.name}</Box>
+                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.id}</Box>
+                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.strategy}</Box>
+                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.message}</Box>
+                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.followers}</Box>
+                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.started}</Box>
+                        <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="20em">
+                          <Box d="flex" flexDirection="row">
+                            <Box><Button onClick={() => deleteCampaign(currentCampaign.id)}>Delete Campaign</Button></Box>
+                            <Box ml="1em"><Button onClick={() => startCampaign(currentCampaign.id)}>Resume</Button></Box>
+                            <Box ml="1em"><Button onClick={() => stopCampaign(currentCampaign.id)}>Pause</Button></Box>
+                          </Box>
+                        </Box>
+                      </Box> : '' }
+                  </Box>)
+                }
+              </Box>  
             </Box>
-            </Box>
-            <Box> { currentCampaign == null ? (
-              <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
-              <Box d="flex" w="100%" justifyContent = "center">
-                <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
-              </Box>
-              <Box d="flex" justifyContent = "center" w="100%" mt="2em">{me.name}</Box>
-              <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@{me.handle}</Box>
-                <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
-                  <Box>{me.following} Following</Box>
-                  <Box ml="4%">{me.followers} Followers</Box>
-                </Box>
-              </Box>
-            ): <Box>
-                <Box d="flex" justifyContent = "center" w="100%" mt="2em">{currentCampaign.name}</Box>
-                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.id}</Box>
-                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.strategy}</Box>
-                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.message}</Box>
-                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.followers}</Box>
-                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.started}</Box>
-               </Box>
             }
-              
-            </Box>
-            <Box mt="10em" width="100%" display="flex" justifyContent="flex-end" pr="1em">
-            {loginButton}
-              </Box>
           </Box>
       </Box>
       </ThemeProvider>
