@@ -91,11 +91,9 @@ function App() {
     .then(res => res.json())
     .then(
       (result) => {
-        setIsLoaded(true);
         setItems(result.campaign_list);
       },
       (error) => {
-        setIsLoaded(true);
         setError(error);
       }
     )
@@ -132,6 +130,21 @@ function App() {
       }
     }, [])
 
+    function showCampaign(name) {
+      
+        items.map(campaign => {
+          if (campaign.name === name) {
+            setCurrentCampaign(campaign);
+          }
+       
+      })
+      // items.map(campaign => {
+      //   if (campaign.id === id) {
+      //     setCurrentCampaign(campaign);
+      //   }
+      // })
+    }
+
   
   return (
     <ThemeProvider>
@@ -146,7 +159,7 @@ function App() {
             {console.log(items)}
             {items.map(campaign => (
               <Box>
-                <Button mb="0.1em" w="100%"leftIcon="check-circle" color="green.500" size="lg">{campaign.name}</Button>
+                <Button w="100%"leftIcon="check-circle" color="green.500" onClick={() => showCampaign(campaign.name)} >{campaign.name}</Button>
               </Box>
             ))}
             </Box>
@@ -224,16 +237,28 @@ function App() {
                 <Box ml="1em"><Button>Start Campaign</Button></Box>
             </Box>
             </Box>
-            <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
+            <Box> { currentCampaign == null ? (
+              <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
               <Box d="flex" w="100%" justifyContent = "center">
                 <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
               </Box>
-            <Box d="flex" justifyContent = "center" w="100%" mt="2em">{me.name}</Box>
-            <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@{me.handle}</Box>
-              <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
-                <Box>{me.following} Following</Box>
-                <Box ml="4%">{me.followers} Followers</Box>
+              <Box d="flex" justifyContent = "center" w="100%" mt="2em">{me.name}</Box>
+              <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@{me.handle}</Box>
+                <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
+                  <Box>{me.following} Following</Box>
+                  <Box ml="4%">{me.followers} Followers</Box>
+                </Box>
               </Box>
+            ): <Box>
+                <Box d="flex" justifyContent = "center" w="100%" mt="2em">{currentCampaign.name}</Box>
+                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.id}</Box>
+                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.strategy}</Box>
+                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.message}</Box>
+                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.followers}</Box>
+                <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.started}</Box>
+               </Box>
+            }
+              
             </Box>
             <Box mt="10em" width="100%" display="flex" justifyContent="flex-end" pr="1em">
             {loginButton}
