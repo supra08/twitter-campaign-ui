@@ -25,54 +25,6 @@ import {
 import { Textarea } from "@chakra-ui/core";
 import { Select } from "@chakra-ui/core";
 
-function App() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
-
-  return (
-    <ThemeProvider>
-    <CSSReset />
-      <Box w="100vw" h="100vh" d="flex" flexDirection="row">
-        <Box h= "100%" w= "20%" d="flex" flexDirection="column">
-            <Box position="static" p="5%" w="100%" d="flex" justifyContent= "center"  border="1px" borderRadius="md" borderColor="gray.200">
-              My Campaigns
-            </Box>
-            <Box d="flex" flexDirection="column" w="100%">
-            {/* list of all campings */}
-            <Box>
-            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 1</Button>
-            </Box>
-            <Box mt="1px">
-            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 2</Button>
-            </Box>
-            <Box mt="1px">
-            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 3</Button>
-            </Box>
-            <Box mt="1px">
-            <Button w="100%"leftIcon="check-circle" color="green.500" >Campaign 4</Button>
-            </Box>
-            </Box>
-        </Box>
-          <Divider mr="0" ml="0" orientation="vertical" />
-          <Box h= "100%" w="80%" d="flex" flexDirection="column" alignItems= "center">
-            <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
-              <Box d="flex" w="100%" justifyContent = "center">
-              <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
-              </Box>
-              <Box d="flex" justifyContent = "center" w="100%" mt="2em">Twitter campaigns</Box>
-              <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">v1.0</Box>
-            </Box>
-            <Box mt="10em" >
-            <Button size="lg">
-              Login
-            </Button>
- 
-              </Box>
-          </Box>
-      </Box>
-      </ThemeProvider>
-  );
-}
 
 function getCampaignInfo(id) {
   fetch('http://127.0.0.1:5000/campaign?id=' + id, {
@@ -123,7 +75,7 @@ function handleLogout() {
   })
 }
 
-function App1() {
+function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
 
@@ -224,86 +176,6 @@ function App1() {
               </DrawerContent>
             </Drawer>
             </Box>
-            <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
-              <Box d="flex" w="100%" justifyContent = "center">
-                <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
-              </Box>
-            <Box d="flex" justifyContent = "center" w="100%" mt="2em">{me.name}</Box>
-            <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@{me.handle}</Box>
-              <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
-                <Box>{me.following} Following</Box>
-                <Box ml="4%">{me.followers} Followers</Box>
-              </Box>
-            </Box>
-            <Box mt="10em" width="100%" display="flex" justifyContent="flex-end" pr="1em">
-            {loginButton}
-              </Box>
-          </Box>
-      </Box>
-      </ThemeProvider>
-  );
-}
-
-
-function CampaignForm() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
-
-  return (
-    <ThemeProvider>
-   <CSSReset />
-      <Box w="100vw" h="100vh" d="flex" flexDirection="row">
-          <Box h= "100%" w= "20%" d="flex" flexDirection="column">
-            <Box position="static" p="5%" w="100%" d="flex" justifyContent= "center"  border="1px" borderRadius="md" borderColor="gray.200">
-              My Campaigns
-            </Box>
-            <Box d="flex" flexDirection="column" w="100%">
-            {/* list of all campings */}
-            <Box>
-            <Button w="100%"leftIcon="check-circle" color="green.500" size="lg">Campaign 1</Button>
-            </Box>
-            <Box mt="0.1em">
-            <Button w="100%"leftIcon="check-circle" color="green.500" size="lg">Campaign 2</Button>
-            </Box>
-            <Box mt="0.1em">
-            <Button w="100%"leftIcon="check-circle" color="green.500" size="lg">Campaign 3</Button>
-            </Box>
-            <Box mt="0.1em">
-            <Button w="100%"leftIcon="check-circle" color="green.500" size="lg">Campaign 4</Button>
-            </Box>
-            </Box>
-          </Box>
-          <Divider mr="0" ml="0" orientation="vertical" />
-          <Box h= "100%" w="80%" d="flex" flexDirection="column" alignItems= "center">
-            <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="2em">
-            <Box d="flex" flexDirection="row">
-              <Box><Button>Save</Button></Box>
-              <Box ml="1em"><Button>Refresh</Button></Box>
-            </Box>
-            <Box>
-              <Button ref={btnRef} onClick={onOpen} leftIcon="add">
-                New Campaign
-              </Button>
-              </Box>
-            <Drawer isOpen={isOpen} placement="top" onClose={onClose} finalFocusRef={btnRef}>
-              <DrawerOverlay />
-              <DrawerContent>
-                <DrawerCloseButton />
-                <DrawerHeader>Campaign Name</DrawerHeader>
-
-                <DrawerBody>
-                  <Input placeholder="Type here..." />
-                </DrawerBody>
-
-                <DrawerFooter>
-                  <Button variant="outline" mr={3} onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button color="blue">Save</Button>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
-            </Box>
             <Box d="flex" flexDirection="column" justifyContent = "flex-start" alignItems= "center" w="100%" mt="2em">
             <form style={{width : '100%'}}>
               <FormControl isRequired>
@@ -352,6 +224,20 @@ function CampaignForm() {
                 <Box ml="1em"><Button>Start Campaign</Button></Box>
             </Box>
             </Box>
+            <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
+              <Box d="flex" w="100%" justifyContent = "center">
+                <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
+              </Box>
+            <Box d="flex" justifyContent = "center" w="100%" mt="2em">{me.name}</Box>
+            <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@{me.handle}</Box>
+              <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
+                <Box>{me.following} Following</Box>
+                <Box ml="4%">{me.followers} Followers</Box>
+              </Box>
+            </Box>
+            <Box mt="10em" width="100%" display="flex" justifyContent="flex-end" pr="1em">
+            {loginButton}
+              </Box>
           </Box>
       </Box>
       </ThemeProvider>
@@ -359,4 +245,4 @@ function CampaignForm() {
 }
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<CampaignForm />, rootElement);
+ReactDOM.render(<App />, rootElement);
