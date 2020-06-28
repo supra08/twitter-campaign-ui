@@ -410,11 +410,11 @@ function App() {
                                 </AccordionHeader>
                                 <AccordionPanel>
                                 <Box maxHeight="10em" overflow='scroll'>
-                                  {/* <List styleType="disc">
+                                  <List styleType="disc">
                                     {currentCampaign.followers.map(follower => (
                                       <ListItem>{follower}</ListItem>
                                     ))}
-                                  </List> */}
+                                  </List>
                                 </Box>
                                 </AccordionPanel>
                               </AccordionItem>
