@@ -385,7 +385,7 @@ function App() {
 
                         <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
                           <Box ml="1em" w="20%"><Heading as="h5" size="sm">Campaign Strategy</Heading></Box>
-                          <Box mr="1em" w="60%" style={{word: "break-word"}}>Most {currentCampaign.strategy} First</Box>
+                          <Box mr="1em" w="60%" style={{word: "break-word"}}>Most {currentCampaign.strategy}\'s First</Box>
                         </Box>
 
                         <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
@@ -404,7 +404,7 @@ function App() {
                               <AccordionItem>
                                 <AccordionHeader>
                                   <Box flex="1" textAlign="left">
-                                  {currentCampaign.strategy}
+                                  {currentCampaign.followers[0]}
                                   </Box>
                                   <AccordionIcon />
                                 </AccordionHeader>
