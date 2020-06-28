@@ -140,28 +140,28 @@ function App() {
   oauth_verifier = urlParams.get('oauth_verifier')
   
   useEffect(() => {
-      // if (oauth_token && oauth_verifier) {
-      //   fetch(BACKEND_URL + "/access_token?oauth_token=" + oauth_token + "&oauth_verifier=" + oauth_verifier, {
-      //     method: 'GET',
-      //   })
-      //   .then(res => res.json())
-      //   .then(
-      //     (result) => {
-      //       console.log(result)
-      //       if (result.status == "success") {
-      //         setLogin(<Button onClick={() => handleLogout(result.user_id)}> Logout </Button>);
-      //         setMe({ name: result.me.name, handle: result.screen_name, followers: result.me.followers_count, following: result.me.friends_count, id: result.user_id })
-      //         fetchCampaigns(result.user_id);
-      //       }
-      //     },
-      //     (error) => {
-      //       setLogin(false);
-      //       setError(error);
-      //     }
-      //   )
-      // }
-      setMe({ name: "palak", handle: "palak_goenka", followers: 34, following: 67, id: 98 })
-      // fetchCampaigns(result.user_id);
+      if (oauth_token && oauth_verifier) {
+        fetch(BACKEND_URL + "/access_token?oauth_token=" + oauth_token + "&oauth_verifier=" + oauth_verifier, {
+          method: 'GET',
+        })
+        .then(res => res.json())
+        .then(
+          (result) => {
+            console.log(result)
+            if (result.status == "success") {
+              setLogin(<Button onClick={() => handleLogout(result.user_id)}> Logout </Button>);
+              setMe({ name: result.me.name, handle: result.screen_name, followers: result.me.followers_count, following: result.me.friends_count, id: result.user_id })
+              fetchCampaigns(result.user_id);
+            }
+          },
+          (error) => {
+            setLogin(false);
+            setError(error);
+          }
+        )
+      }
+      // setMe({ name: "palak", handle: "palak_goenka", followers: 34, following: 67, id: 98 })
+      fetchCampaigns(result.user_id);
     }, [])
 
     function showCampaign(name) { 
