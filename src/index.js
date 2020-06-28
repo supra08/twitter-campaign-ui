@@ -115,8 +115,6 @@ function App() {
 
   useEffect(() => {
     if (me) {
-      console.log('########')
-      console.log(me)
       fetch(BACKEND_URL + '/campaigns?user_id=' + me.id, {
         method: 'GET',
       })
@@ -136,7 +134,6 @@ function App() {
   let oauth_verifier = ""
 
   const [loginButton, setLogin] = useState( <Button onClick={handleLogin}> Login </Button> );
-  // const [me, setMe] = useState({ name: '', handle: '', followers: '', following: '' })
   const urlParams = new URLSearchParams(window.location.search);
   oauth_token = urlParams.get('oauth_token');
   oauth_verifier = urlParams.get('oauth_verifier')
