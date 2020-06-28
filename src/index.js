@@ -155,7 +155,7 @@ function App() {
             console.log(result)
             if (result.status == "success") {
               setLogin(<Button onClick={() => handleLogout(result.user_id)}> Logout </Button>);
-              setMe({ name: result.me.name, handle: result.screen_name, followers: result.me.followers_count, following: result.me.friends_count, id: result.user_id, image: result.me.profile_image_url })
+              setMe({ name: result.me.name, handle: result.screen_name, followers: result.me.followers_count, following: result.me.friends_count, id: result.user_id })
               fetchCampaigns(result.user_id);
             }
           },
@@ -352,7 +352,7 @@ function App() {
                   { me ? (
                   <Box d="flex" w="100%" justifyContent= "center" flexDirection="column">
                     <Box d="flex" w="100%" justifyContent = "center">
-                      <Image justifyContent = "center" src={me.image} alt="App logo" />
+                      <Image justifyContent = "center" src={Dummy} alt="App logo" />
                     </Box>
                     <Box d="flex" justifyContent = "center" w="100%" mt="2em">
                       <Heading as="h4" size="md">{me.name}</Heading>
