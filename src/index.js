@@ -71,7 +71,7 @@ function App() {
       if (response.status == "true") {
         setMe(null);
         window.location.replace(
-          "http://localhost:3000/"
+          "http://ec2-54-161-90-135.compute-1.amazonaws.com:8080"
         );
       } else {
         console.log("Logout failed");
@@ -351,11 +351,12 @@ function App() {
                       <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
                         <Box>{me.following} Following</Box>
                         <Box ml="4%">{me.followers} Followers</Box>
-                      </Box>)
+                      </Box>
                     </Box>)  : ''}
                   </Box>
                 ): (<Box> { me ? 
                       <Box>
+                        
                         <Box d="flex" justifyContent = "center" w="100%" mt="2em">{currentCampaign.name}</Box>
                         <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.id}</Box>
                         <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.strategy}</Box>
