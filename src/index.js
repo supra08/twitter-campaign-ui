@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { ThemeProvider, CSSReset, Box, Heading, Flex} from "@chakra-ui/core";
+import { ThemeProvider, CSSReset, Box, Heading, Flex, Accordion} from "@chakra-ui/core";
 import { Button, ButtonGroup } from "@chakra-ui/core";
 import {Image, Badge} from "@chakra-ui/core";
 import { Divider } from "@chakra-ui/core";
@@ -25,7 +25,12 @@ import {
 } from "@chakra-ui/core";
 import { Textarea } from "@chakra-ui/core";
 import { Select } from "@chakra-ui/core";
-
+import {
+  AccordionItem,
+  AccordionHeader,
+  AccordionPanel,
+  AccordionIcon,
+} from "@chakra-ui/core";
 const BACKEND_URL = "http://ec2-54-161-90-135.compute-1.amazonaws.com:5000";
 
 function getCampaignInfo(id) {
@@ -366,21 +371,81 @@ function App() {
                       </Box>
                     )}
                   </Box>
-                ): (<Box> { me ? 
-                      <Box>
-                        
-                        <Box d="flex" justifyContent = "center" w="100%" mt="2em">{currentCampaign.name}</Box>
-                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.id}</Box>
-                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.strategy}</Box>
-                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.message}</Box>
-                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.followers}</Box>
-                        <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.started}</Box>
+                ): (<Box w="100%" d="flex" flexDirection="column"> { me ? 
+                      <Box w="100%" d="flex" flexDirection="column" mt="2em" mb="1em" pl="1em">
+                        <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
+                          <Box ml="1em" w="20%"><Heading as="h5" size="sm">Campaign Name</Heading></Box>
+                          <Box mr="1em" w="60%" style={{word: "break-word"}}>{currentCampaign.name}</Box>
+                        </Box>
+
+                        <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
+                          <Box ml="1em" w="20%"><Heading as="h5" size="sm">Campaign Id</Heading></Box>
+                          <Box mr="1em" w="60%" style={{word: "break-word"}}>{currentCampaign.id}</Box>
+                        </Box>
+
+                        <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
+                          <Box ml="1em" w="20%"><Heading as="h5" size="sm">Campaign Strategy</Heading></Box>
+                          <Box mr="1em" w="60%" style={{word: "break-word"}}>Most {currentCampaign.strategy} First</Box>
+                        </Box>
+
+                        <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
+                          <Box ml="1em" w="20%"><Heading as="h5" size="sm">Message</Heading></Box>
+                          <Box mr="1em" w="60%">
+                            <Box w="60%" style={{word: "break-word"}}>
+                            {currentCampaign.message}
+                            </Box>
+                          </Box>
+                        </Box>
+
+                        <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
+                          <Box ml="1em" w="20%"><Heading as="h5" size="sm">DM Receivers</Heading></Box>
+                          <Box mr="1em" w="60%">
+                            <Box w="40%">
+                              <AccordionItem>
+                                <AccordionHeader>
+                                  <Box flex="1" textAlign="left">
+                                  {currentCampaign.strategy}
+                                  </Box>
+                                  <AccordionIcon />
+                                </AccordionHeader>
+                                <AccordionPanel>
+                                <Box maxHeight="10em" overflow='scroll'>
+                                  <List styleType="disc">
+                                    {currentCampaign.followers.map(follower => (
+                                      <ListItem>{follower}</ListItem>
+                                    ))}
+                                  </List>
+                                </Box>
+                                </AccordionPanel>
+                              </AccordionItem>
+                            </Box>
+                          </Box>
+                        </Box>
+
+                        <Box w="100%" d="flex" flexDirection="row" justifyContent="space-between" mb="1em" pl="1em">
+                          <Box ml="1em" w="20%"><Heading as="h5" size="sm">Campaign Status</Heading></Box>
+                          <Box mr="1em" w="60%" style={{word: "break-word"}}>{currentCampaign.started}</Box>
+                        </Box>
+
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="2em">{currentCampaign.name}</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="2em">"Campaign 1"</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">123</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.id}</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.strategy}</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">"Tweet</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.message}</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">"Hey"</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.followers}</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">12</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.started}</Box> */}
+                        {/* <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">True</Box> */}
                         <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="15em">
                           <Box d="flex" flexDirection="row">
-                            <Box><Button onClick={() => deleteCampaign(currentCampaign.id)}>Delete Campaign</Button></Box>
+                            {/* <Box><Button onClick={() => deleteCampaign(currentCampaign.id)}>Delete Campaign</Button></Box> */}
                             <Box ml="1em"><Button onClick={() => startCampaign(currentCampaign.id)}>Resume</Button></Box>
                             <Box ml="1em"><Button onClick={() => stopCampaign(currentCampaign.id)}>Pause</Button></Box>
                           </Box>
+                          <Box><Button onClick={() => deleteCampaign(currentCampaign.id)}>Delete Campaign</Button></Box>
                         </Box>
                       </Box> : '' }
                   </Box>)
