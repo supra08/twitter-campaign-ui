@@ -14,7 +14,8 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/core";
 import { Input,useDisclosure } from "@chakra-ui/core";
-import Twitter from "./twitter.svg"
+import Logo from "./logo.png"
+import Dummy from "./dummy.png"
 import { List, ListItem, ListIcon } from "@chakra-ui/core";
 import {
   FormControl,
@@ -159,6 +160,8 @@ function App() {
           }
         )
       }
+      // setMe({ name: "palak", handle: "palak_goenka", followers: 34, following: 67, id: 98 })
+      // fetchCampaigns(result.user_id);
     }, [])
 
     function showCampaign(name) { 
@@ -241,10 +244,10 @@ function App() {
   return (
     <ThemeProvider>
    <CSSReset />
-      <Box w="100vw" h="100vh" d="flex" flexDirection="row">
+      <Box w="100vw" h="100vh" d="flex" flexDirection="row" bg="grey.50">
           <Box h= "100%" w= "20%" d="flex" flexDirection="column">
             <Box position="static" p="5%" w="100%" d="flex" justifyContent= "center"  border="1px" borderRadius="md" borderColor="gray.200">
-              My Campaigns
+            <Heading as="h3" size="lg">My Campaigns</Heading>
             </Box>
             <Box d="flex" flexDirection="column" w="100%">
             {/* list of all campings */}
@@ -327,7 +330,7 @@ function App() {
                       <Box w="70%" pr="1em">0/2</Box>
                     </Box>
                   </Box>
-                  <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="20em">
+                  <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="15em">
                     <Box d="flex" flexDirection="row">
                       <Box ml="1em"><Button type="submit">Start Campaign</Button></Box>
                     </Box>
@@ -335,21 +338,33 @@ function App() {
                 </form>
               </Box> 
             ) : 
-              <Box>
-                <Box> { currentCampaign == null ? (
-                  <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em">
-                  <Box d="flex" w="100%" justifyContent = "center">
-                    <Image size="20%" justifyContent = "center" src={Twitter} alt="Twitter logo" />
-                  </Box>
+              <Box d="flex" width="100%">
+                <Box d="flex" width="100%"> { currentCampaign == null ? (
+                  <Box d="flex" flexDirection="column" justifyContent = "center" alignItems= "center" mt="8em" w="100%">
+                  {/* <Box d="flex" w="100%" justifyContent = "center">
+                    <Image size="40%" justifyContent = "center" src={Logo} alt="App logo" />
+                  </Box> */}
                   { me ? (
-                  <Box> 
-                    <Box d="flex" justifyContent = "center" w="100%" mt="2em">{me.name}</Box>
-                    <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">@{me.handle}</Box>
-                      <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
-                        <Box>{me.following} Following</Box>
-                        <Box ml="4%">{me.followers} Followers</Box>
+                  <Box d="flex" w="100%" justifyContent= "center" flexDirection="column">
+                    <Box d="flex" w="100%" justifyContent = "center">
+                      <Image justifyContent = "center" src={Dummy} alt="App logo" />
+                    </Box>
+                    <Box d="flex" justifyContent = "center" w="100%" mt="2em">
+                      <Heading as="h4" size="md">{me.name}</Heading>
+                    </Box>
+                    <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">
+                      <Heading as="h3" size="lg">@{me.handle}</Heading>
                       </Box>
-                    </Box>)  : ''}
+                      <Box d="flex" flexDirection="row" justifyContent = "center" w="100%" mt="0.5em">
+                        <Box><Heading as="h4" size="sm">{me.following} Following </Heading></Box>
+                        <Box ml="4%"><Heading as="h4" size="sm">{me.followers} Followers </Heading></Box>
+                      </Box>
+                    </Box>)  : (
+                      <Box d="flex" w="100%" justifyContent = "center" flexDirection = "column" alignItems="center">
+                        <Box d="flex" justifyContent="center"><Image size="40%" justifyContent = "center" src={Logo} alt="App logo" /></Box>
+                        <Box mt="1em"><Heading as="h3" size="md">v1.0</Heading></Box>
+                      </Box>
+                    )}
                   </Box>
                 ): (<Box> { me ? 
                       <Box>
@@ -360,7 +375,7 @@ function App() {
                         <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.message}</Box>
                         <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.followers}</Box>
                         <Box d="flex" justifyContent = "center" w="100%" mt="0.5em">{currentCampaign.started}</Box>
-                        <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="20em">
+                        <Box width="100%" display="flex" justifyContent="space-between" pr="1em" pl="1em" mt="15em">
                           <Box d="flex" flexDirection="row">
                             <Box><Button onClick={() => deleteCampaign(currentCampaign.id)}>Delete Campaign</Button></Box>
                             <Box ml="1em"><Button onClick={() => startCampaign(currentCampaign.id)}>Resume</Button></Box>
