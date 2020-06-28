@@ -25,7 +25,7 @@ import {
 import { Textarea } from "@chakra-ui/core";
 import { Select } from "@chakra-ui/core";
 
-const BACKEND_URL = "https://twicamp-backend.herokuapp.com";
+const BACKEND_URL = "http://ec2-54-161-90-135.compute-1.amazonaws.com:5000";
 
 function getCampaignInfo(id) {
   fetch('http://127.0.0.1:5000/campaign?id=' + id, {
