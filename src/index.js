@@ -412,7 +412,7 @@ function App() {
                                 <Box maxHeight="10em" overflow='scroll'>
                                   <List styleType="disc">
                                     {currentCampaign.followers.map(follower => (
-                                      <ListItem>{follower}</ListItem>
+                                      <ListItem>{follower.handle}</ListItem>
                                     ))}
                                   </List>
                                 </Box>
